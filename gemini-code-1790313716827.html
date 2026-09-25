@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>레쉽(Recipe-Easy) - 레시피를 쉽게!</title>
+    <style>
+        :root {
+            --primary: #2E7D32;
+            --bg: #F4F6F8;
+            --card: #FFFFFF;
+            --text: #212121;
+        }
+        body {
+            font-family: 'Pretendard', -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+        .app-container {
+            width: 100%;
+            max-width: 430px;
+            background: var(--card);
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        header h1 { margin: 0; font-size: 24px; font-weight: 800; }
+        header p { margin: 5px 0 0 0; font-size: 13px; opacity: 0.9; }
+        
+        .easy-mode-banner {
+            background-color: #E8F5E9;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #C8E6C9;
+        }
+        .easy-mode-banner span { font-weight: bold; font-size: 15px; color: #1B5E20; }
+        
+        main { padding: 20px; flex: 1; }
+        .card {
+            background: #F9F9F9;
+            border: 1px solid #E0E0E0;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+        .card-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            color: #1B5E20;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .price-compare {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #EEEEEE;
+        }
+        .badge-red { background: #FFEBEE; color: #C62828; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+        .badge-green { background: #E8F5E9; color: #2E7D32; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+        
+        button.btn-primary {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(46,125,50,0.2);
+        }
+        button.btn-primary:active { transform: scale(0.98); }
+        
+        .result-box {
+            margin-top: 15px;
+            background: #FFFFFF;
+            border: 2px solid #2E7D32;
+            border-radius: 10px;
+            padding: 16px;
+            display: none;
+        }
+        .ingredient-list {
+            background: #F1F8E9;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            margin: 10px 0;
+        }
+        .recipe-steps {
+            font-size: 14px;
+            line-height: 1.6;
+            margin-top: 10px;
+        }
+        .recipe-steps li {
+            margin-bottom: 8px;
+        }
+        footer {
+            text-align: center;
+            padding: 15px;
+            font-size: 11px;
+            color: #757575;
+            background: #FAFAFA;
+            border-top: 1px solid #EEEEEE;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <header>
+        <h1>레쉽 (Recipe-Easy)</h1>
+        <p>공공데이터 기반 적정기술 맞춤 식단 솔루션</p>
+    </header>
+
+    <div class="easy-mode-banner">
+        <span>👵 어르신·쉬운 글자 모드</span>
+        <input type="checkbox" id="easyToggle" onchange="toggleEasyMode()" style="transform: scale(1.3);">
+    </div>
+
+    <main>
+        <!-- 기능 1: 실시간 알뜰 대체 식재료 비교 -->
+        <div class="card">
+            <div class="card-title">💡 오늘 물가 기준 대체 식재료 추천</div>
+            <div class="price-compare">
+                <div>
+                    <span class="badge-red">가격 상승</span><br>
+                    <strong style="font-size:15px;">시금치</strong>
+                    <div style="font-size:12px; color:#757575;">4,500원 / 300g</div>
+                </div>
+                <div style="font-size:20px; color:#9E9E9E;">➔</div>
+                <div>
+                    <span class="badge-green">가성비 추천</span><br>
+                    <strong style="font-size:15px; color:#2E7D32;">부추 (동일 영양)</strong>
+                    <div style="font-size:12px; color:#2E7D32;">1,800원 / 300g</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 기능 2: 예산별 상세 장보기 & 레시피 매뉴얼 -->
+        <div class="card">
+            <div class="card-title">🛒 예산 맞춤 장보기 & 상세 레시피</div>
+            <p style="font-size:13px; color:#616161; margin-top:0;">예산을 선택하면 <b>무엇을 사서 어떻게 만들지</b> 상세히 알려드립니다.</p>
+            
+            <label style="font-size:13px; font-weight:bold;">한 끼 예산 선택:</label>
+            <select id="budgetSelect" style="width:100%; padding:10px; margin:5px 0 15px 0; border-radius:6px; border:1px solid #CCC; font-size:15px;">
+                <option value="3000">3,000원 이하 (초알뜰 장보기)</option>
+                <option value="5000" selected>5,000원 이하 (권장 식단)</option>
+                <option value="7000">7,000원 이하 (풍성한 식단)</option>
+            </select>
+
+            <button class="btn-primary" onclick="generateMeal()">맞춤 장보기 & 조리법 보기</button>
+
+            <!-- 결과 출력 영역 -->
+            <div id="resultBox" class="result-box">
+                <h3 id="resultTitle" style="color:#2E7D32; margin:0 0 10px 0; font-size:18px;"></h3>
+                
+                <div style="font-weight:bold; font-size:14px; color:#333;">🛒 마트에서 사야 할 재료:</div>
+                <div id="ingredientList" class="ingredient-list"></div>
+
+                <div style="font-weight:bold; font-size:14px; color:#333; margin-top:12px;">👨‍🍳 상세 요리 순서 (레시피):</div>
+                <ol id="recipeSteps" class="recipe-steps" style="padding-left:20px; margin:8px 0 0 0;"></ol>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p><strong>[레쉽 - 적정기술 프로젝트]</strong></p>
+        <p>데이터 출처: 농림축산식품부, 가락시장, 식약처 공공 API</p>
+    </footer>
+</div>
+
+<script>
+    function toggleEasyMode() {
+        const isChecked = document.getElementById('easyToggle').checked;
+        if(isChecked) {
+            document.body.style.fontSize = "18px";
+            document.querySelectorAll('.card-title').forEach(el => el.style.fontSize = "20px");
+            document.querySelector('.btn-primary').style.padding = "22px";
+            document.querySelector('.btn-primary').style.fontSize = "22px";
+        } else {
+            document.body.style.fontSize = "14px";
+            document.querySelectorAll('.card-title').forEach(el => el.style.fontSize = "16px");
+            document.querySelector('.btn-primary').style.padding = "16px";
+            document.querySelector('.btn-primary').style.fontSize = "18px";
+        }
+    }
+
+    function generateMeal() {
+        const budget = document.getElementById('budgetSelect').value;
+        const resultBox = document.getElementById('resultBox');
+        const resultTitle = document.getElementById('resultTitle');
+        const ingredientList = document.getElementById('ingredientList');
+        const recipeSteps = document.getElementById('recipeSteps');
+
+        resultBox.style.display = "block";
+
+        if(budget === "3000") {
+            resultTitle.innerText = "🍳 계란 부추 덮밥 (총 2,300원)";
+            ingredientList.innerHTML = `
+                • 계란 2알 (600원)<br>
+                • 부추 한 줌 (800원 - 시금치 대신 가성비 추천)<br>
+                • 밥 1공기 (900원)<br>
+                • 기본 양념: 간장 1스푼, 참기름 반 스푼 (집에 있는 재료 활용)
+            `;
+            recipeSteps.innerHTML = `
+                <li>부추를 흐르는 물에 씻은 뒤 먹기 좋은 크기(3~4cm)로 썰어둡니다.</li>
+                <li>달군 프라이팬에 식용유를 약간 두르고 계란 2개를 풀어 반숙으로 볶아줍니다.</li>
+                <li>계란이 살짝 익으면 썰어둔 부추와 간장 1스푼을 넣고 1분간 가볍게 더 볶습니다.</li>
+                <li>따뜻한 밥 위에 볶은 재료를 올리고 참기름을 살짝 둘러 완성합니다.</li>
+            `;
+        } else if(budget === "5000") {
+            resultTitle.innerText = "🥩 두부 제육 볶음 (총 4,400원)";
+            ingredientList.innerHTML = `
+                • 돼지고기 앞다리살 150g (2,500원)<br>
+                • 두부 반 모 (1,100원)<br>
+                • 양파 1/2개 (500원)<br>
+                • 대파 약간 (300원)<br>
+                • 양념장: 고추장 1스푼, 진간장 1스푼, 다진 마늘 1/2스푼
+            `;
+            recipeSteps.innerHTML = `
+                <li>두부는 1cm 두께로 썰어 키친타월로 물기를 빼고, 팬에 기름을 두르고 노릇하게 구워냅니다.</li>
+                <li>양파와 대파를 채 썰어 준비합니다.</li>
+                <li>팬에 돼지고기와 양념장을 넣고 고기가 거의 익을 때까지 중불에서 볶습니다.</li>
+                <li>고기가 익으면 썰어둔 양파와 대파를 넣고 2분간 더 강불로 볶아줍니다.</li>
+                <li>접시에 구운 두부를 깔고 그 위에 볶은 제육을 올려 함께 싸서 먹습니다.</li>
+            `;
+        } else {
+            resultTitle.innerText = "🐟 고등어 구이 & 버섯 된장찌개 (총 6,200원)";
+            ingredientList.innerHTML = `
+                • 자반고등어 1필렛 (3,000원)<br>
+                • 팽이버섯 1봉 (800원)<br>
+                • 찌개용 두부 반 모 (1,100원)<br>
+                • 애호박 1/3개 (800원)<br>
+                • 찌개 양념: 된장 1.5스푼, 쌀뜨물 2컵
+            `;
+            recipeSteps.innerHTML = `
+                <li>냄비에 쌀뜨물 2컵을 붓고 된장 1.5스푼을 잘 풀어 끓입니다.</li>
+                <li>물이 끓으면 깍둑썰기한 두부, 애호박, 팽이버섯을 넣고 5분간 중불로 끓여줍니다.</li>
+                <li>달군 팬에 식용유를 살짝 두르고, 고등어 껍질 부분부터 팬에 올려 중약불로 노릇하게 구워줍니다.</li>
+                <li>고등어가 뒤집어 양면 모두 익으면 찌개와 함께 차려 완성합니다.</li>
+            `;
+        }
+    }
+</script>
+
+</body>
+</html>
